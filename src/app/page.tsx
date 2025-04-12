@@ -1,103 +1,152 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import Header from '@/components/layout/Header';
+import RegionFilter from '@/components/filters/RegionFilter';
+import FacilityFilter from '@/components/filters/FacilityFilter';
+import OperatingHourFilter from '@/components/filters/OperatingHourFilter';
+import CafeList from '@/components/cafe/CafeList';
+import { Cafe } from '@/types';
+
+// 예시 카페 데이터
+const SAMPLE_CAFES: Cafe[] = [
+  {
+    id: '1',
+    name: '카페 서울숲',
+    address: '서울시 성동구 서울숲2길 23-1',
+    imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24',
+    facilities: ['outlet', 'wifi', 'parking'],
+    operatingHours: {
+      open: '10:00',
+      close: '22:00'
+    },
+    tags: ['콘센트 있음', '와이파이 빵빵', '주차 가능']
+  },
+  {
+    id: '2',
+    name: '스타벅스 강남역점',
+    address: '서울시 강남구 강남대로 396',
+    imageUrl: 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8',
+    facilities: ['outlet', 'wifi', '24h'],
+    operatingHours: {
+      open: '00:00',
+      close: '24:00'
+    },
+    tags: ['24시간', '콘센트 있음', '와이파이 빵빵']
+  },
+  {
+    id: '3',
+    name: '블루보틀 삼청점',
+    address: '서울시 종로구 삼청로 13',
+    imageUrl: 'https://images.unsplash.com/photo-1578474846511-04ba529f0b88',
+    facilities: ['wifi', 'quiet'],
+    operatingHours: {
+      open: '08:00',
+      close: '20:00'
+    },
+    tags: ['조용함', '와이파이 빵빵', '넓은 테이블']
+  },
+  {
+    id: '4',
+    name: '카페 연남',
+    address: '서울시 마포구 연남동 487-8',
+    imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24',
+    facilities: ['outlet', 'table', 'quiet'],
+    operatingHours: {
+      open: '11:00',
+      close: '23:00'
+    },
+    tags: ['넓은 테이블', '콘센트 있음', '조용함']
+  },
+  {
+    id: '5',
+    name: '커피한약방',
+    address: '서울시 용산구 이태원로 234',
+    imageUrl: 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8',
+    facilities: ['wifi', 'table', 'parking'],
+    operatingHours: {
+      open: '10:30',
+      close: '22:00'
+    },
+    tags: ['주차 가능', '넓은 테이블', '와이파이 빵빵']
+  },
+  {
+    id: '6',
+    name: '브라운핸즈 판교',
+    address: '경기도 성남시 분당구 판교역로 235',
+    imageUrl: 'https://images.unsplash.com/photo-1578474846511-04ba529f0b88',
+    facilities: ['outlet', 'wifi', 'table'],
+    operatingHours: {
+      open: '09:00',
+      close: '21:00'
+    },
+    tags: ['콘센트 있음', '와이파이 빵빵', '넓은 테이블']
+  }
+];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [selectedRegion, setSelectedRegion] = useState('전체');
+  const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
+  const [selectedHours, setSelectedHours] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  // 실제 구현에서는 API 호출 등을 통해 데이터를 가져옵니다
+  const cafes = SAMPLE_CAFES.filter(cafe => cafe.name.includes(searchQuery));
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleFacilityChange = (facilityId: string) => {
+    setSelectedFacilities(prev =>
+      prev.includes(facilityId)
+        ? prev.filter(id => id !== facilityId)
+        : [...prev, facilityId]
+    );
+  };
+
+  const handleHourChange = (hourId: string) => {
+    setSelectedHours(prev =>
+      prev.includes(hourId)
+        ? prev.filter(id => id !== hourId)
+        : [...prev, hourId]
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header onSearch={handleSearch} />
+      <main className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800">지역</h2>
+            <RegionFilter
+              selectedRegion={selectedRegion}
+              onRegionChange={setSelectedRegion}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800">시설</h2>
+            <FacilityFilter
+              selectedFacilities={selectedFacilities}
+              onFacilityChange={handleFacilityChange}
+            />
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800">운영시간</h2>
+            <OperatingHourFilter
+              selectedHours={selectedHours}
+              onHourChange={handleHourChange}
+            />
+          </section>
+
+          <section className="mt-8">
+            <CafeList cafes={cafes} />
+          </section>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
