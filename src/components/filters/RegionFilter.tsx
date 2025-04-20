@@ -6,14 +6,14 @@ interface Props {
   onRegionChange: (region: string) => void;
 }
 
-const regions = ['전체', '서울', '경기', '인천', '부산', '대구', '더보기'];
+const regions = ['전체', '서울', '경기', '인천', '부산', '제주'];
 
 function RegionFilter({ 
   selectedRegion,
   onRegionChange 
 }: Props) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2">
+    <div className="flex gap-2 pb-2">
       {regions.map((region) => (
         <Tag
           key={region}

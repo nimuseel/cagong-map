@@ -7,6 +7,7 @@ import FacilityFilter from '@/components/filters/FacilityFilter';
 import OperatingHourFilter from '@/components/filters/OperatingHourFilter';
 import CafeList from '@/components/cafe/CafeList';
 import { Cafe } from '@/types';
+import Image from 'next/image';
 
 // 예시 카페 데이터
 const SAMPLE_CAFES: Cafe[] = [
@@ -90,6 +91,8 @@ export default function Home() {
   const [selectedHours, setSelectedHours] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [selectedCafe, setSelectedCafe] = useState('');
+
   // 실제 구현에서는 API 호출 등을 통해 데이터를 가져옵니다
   const cafes = SAMPLE_CAFES.filter(cafe => cafe.name.includes(searchQuery));
 
@@ -114,39 +117,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header onSearch={handleSearch} />
-      <main className="container mx-auto px-4 py-8">
-        <div className="space-y-6">
-          <section className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-800">지역</h2>
-            <RegionFilter
-              selectedRegion={selectedRegion}
-              onRegionChange={setSelectedRegion}
-            />
-          </section>
-
-          <section className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-800">시설</h2>
-            <FacilityFilter
-              selectedFacilities={selectedFacilities}
-              onFacilityChange={handleFacilityChange}
-            />
-          </section>
-
-          <section className="space-y-4">
-            <h2 className="text-lg font-semibold text-gray-800">운영시간</h2>
-            <OperatingHourFilter
-              selectedHours={selectedHours}
-              onHourChange={handleHourChange}
-            />
-          </section>
-
-          <section className="mt-8">
-            <CafeList cafes={cafes} />
-          </section>
+    <div className="min-h-screen bg-gray-50 flex itesm-center overflow-hidden">
+      <div className='flex flex-2 h-screen p-5'>
+        <div className='flex flex-col w-full gap-4'>
+          <RegionFilter selectedRegion={selectedRegion} onRegionChange={region => setSelectedRegion(region)} />
+          <div className='grid grid-cols-3 gap-4 w-full overflow-auto'>
+            {Array.from({ length: 50 }).map((_, key) => (
+              <div className='h-68 relative' onClick={() => setSelectedCafe(`${key}`)} key={key}>
+                <Image src="https://images.unsplash.com/photo-1554118811-1e0d58224f24" alt="img" fill objectFit='cover' />
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+      </div>
+      <div className='flex flex-3 w-full'>{selectedCafe}</div>
     </div>
   );
 }

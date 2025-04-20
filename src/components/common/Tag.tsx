@@ -10,9 +10,9 @@ function Tag({ label, active = false, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1 rounded-full text-sm ${
+      className={`w-14 h-8 px-3 py-1 rounded-full box-border text-sm hover:cursor-pointer ${
         active 
-          ? 'bg-purple-500 text-white' 
+          ? 'border-2 border-gray-80' 
           : 'bg-gray-100 text-gray-700'
       }`}
     >
