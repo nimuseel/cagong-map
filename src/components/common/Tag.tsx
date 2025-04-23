@@ -12,7 +12,7 @@ function Tag({ label, active = false, onClick }: Props) {
       onClick={onClick}
       className={`w-14 h-8 px-3 py-1 rounded-full box-border text-sm hover:cursor-pointer ${
         active 
-          ? 'border-2 border-gray-80' 
+          ? 'border-2 border-gray-800' 
           : 'bg-gray-100 text-gray-700'
       }`}
     >

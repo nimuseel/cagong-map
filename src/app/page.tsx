@@ -8,6 +8,7 @@ import OperatingHourFilter from '@/components/filters/OperatingHourFilter';
 import CafeList from '@/components/cafe/CafeList';
 import { Cafe } from '@/types';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 // 예시 카페 데이터
 const SAMPLE_CAFES: Cafe[] = [
@@ -122,7 +123,7 @@ export default function Home() {
         <div className='flex flex-col w-full gap-4'>
           <RegionFilter selectedRegion={selectedRegion} onRegionChange={region => setSelectedRegion(region)} />
           <div className='grid grid-cols-3 gap-4 w-full overflow-auto'>
-            {Array.from({ length: 50 }).map((_, key) => (
+            {Array.from({ length: 5 }).map((_, key) => (
               <div className='h-68 relative' onClick={() => setSelectedCafe(`${key}`)} key={key}>
                 <Image src="https://images.unsplash.com/photo-1554118811-1e0d58224f24" alt="img" fill objectFit='cover' />
               </div>
@@ -130,7 +131,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className='flex flex-3 w-full'>{selectedCafe}</div>
+      <div className='flex flex-3 w-full'>
+        <div className='flex flex-col w-full justify-center items-center gap-6'>
+          <h3 className='font-bold text-xl text-gray-800'>내가 다녀온 장소를 기록하세요.</h3>
+          <Button variant="kakao">카카오 로그인</Button>
+        </div>
+      </div>
     </div>
   );
 }
