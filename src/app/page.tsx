@@ -1,11 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Header from '@/components/layout/Header';
 import RegionFilter from '@/components/filters/RegionFilter';
-import FacilityFilter from '@/components/filters/FacilityFilter';
-import OperatingHourFilter from '@/components/filters/OperatingHourFilter';
-import CafeList from '@/components/cafe/CafeList';
 import { Cafe } from '@/types';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -20,9 +16,9 @@ const SAMPLE_CAFES: Cafe[] = [
     facilities: ['outlet', 'wifi', 'parking'],
     operatingHours: {
       open: '10:00',
-      close: '22:00'
+      close: '22:00',
     },
-    tags: ['콘센트 있음', '와이파이 빵빵', '주차 가능']
+    tags: ['콘센트 있음', '와이파이 빵빵', '주차 가능'],
   },
   {
     id: '2',
@@ -32,9 +28,9 @@ const SAMPLE_CAFES: Cafe[] = [
     facilities: ['outlet', 'wifi', '24h'],
     operatingHours: {
       open: '00:00',
-      close: '24:00'
+      close: '24:00',
     },
-    tags: ['24시간', '콘센트 있음', '와이파이 빵빵']
+    tags: ['24시간', '콘센트 있음', '와이파이 빵빵'],
   },
   {
     id: '3',
@@ -44,9 +40,9 @@ const SAMPLE_CAFES: Cafe[] = [
     facilities: ['wifi', 'quiet'],
     operatingHours: {
       open: '08:00',
-      close: '20:00'
+      close: '20:00',
     },
-    tags: ['조용함', '와이파이 빵빵', '넓은 테이블']
+    tags: ['조용함', '와이파이 빵빵', '넓은 테이블'],
   },
   {
     id: '4',
@@ -56,9 +52,9 @@ const SAMPLE_CAFES: Cafe[] = [
     facilities: ['outlet', 'table', 'quiet'],
     operatingHours: {
       open: '11:00',
-      close: '23:00'
+      close: '23:00',
     },
-    tags: ['넓은 테이블', '콘센트 있음', '조용함']
+    tags: ['넓은 테이블', '콘센트 있음', '조용함'],
   },
   {
     id: '5',
@@ -68,9 +64,9 @@ const SAMPLE_CAFES: Cafe[] = [
     facilities: ['wifi', 'table', 'parking'],
     operatingHours: {
       open: '10:30',
-      close: '22:00'
+      close: '22:00',
     },
-    tags: ['주차 가능', '넓은 테이블', '와이파이 빵빵']
+    tags: ['주차 가능', '넓은 테이블', '와이파이 빵빵'],
   },
   {
     id: '6',
@@ -80,10 +76,10 @@ const SAMPLE_CAFES: Cafe[] = [
     facilities: ['outlet', 'wifi', 'table'],
     operatingHours: {
       open: '09:00',
-      close: '21:00'
+      close: '21:00',
     },
-    tags: ['콘센트 있음', '와이파이 빵빵', '넓은 테이블']
-  }
+    tags: ['콘센트 있음', '와이파이 빵빵', '넓은 테이블'],
+  },
 ];
 
 export default function Home() {
@@ -105,7 +101,7 @@ export default function Home() {
     setSelectedFacilities(prev =>
       prev.includes(facilityId)
         ? prev.filter(id => id !== facilityId)
-        : [...prev, facilityId]
+        : [...prev, facilityId],
     );
   };
 
@@ -113,27 +109,40 @@ export default function Home() {
     setSelectedHours(prev =>
       prev.includes(hourId)
         ? prev.filter(id => id !== hourId)
-        : [...prev, hourId]
+        : [...prev, hourId],
     );
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex itesm-center overflow-hidden">
-      <div className='flex flex-2 h-screen p-5'>
-        <div className='flex flex-col w-full gap-4'>
-          <RegionFilter selectedRegion={selectedRegion} onRegionChange={region => setSelectedRegion(region)} />
-          <div className='grid grid-cols-3 gap-4 w-full overflow-auto'>
+      <div className="flex flex-2 h-screen p-5">
+        <div className="flex flex-col w-full gap-4">
+          <RegionFilter
+            selectedRegion={selectedRegion}
+            onRegionChange={region => setSelectedRegion(region)}
+          />
+          <div className="grid grid-cols-3 gap-4 w-full overflow-auto">
             {Array.from({ length: 5 }).map((_, key) => (
-              <div className='h-68 relative' onClick={() => setSelectedCafe(`${key}`)} key={key}>
-                <Image src="https://images.unsplash.com/photo-1554118811-1e0d58224f24" alt="img" fill objectFit='cover' />
+              <div
+                className="h-68 relative"
+                onClick={() => setSelectedCafe(`${key}`)}
+                key={key}>
+                <Image
+                  src="https://images.unsplash.com/photo-1554118811-1e0d58224f24"
+                  alt="img"
+                  fill
+                  objectFit="cover"
+                />
               </div>
             ))}
           </div>
         </div>
       </div>
-      <div className='flex flex-3 w-full'>
-        <div className='flex flex-col w-full justify-center items-center gap-6'>
-          <h3 className='font-bold text-xl text-gray-800'>내가 다녀온 장소를 기록하세요.</h3>
+      <div className="flex flex-3 w-full">
+        <div className="flex flex-col w-full justify-center items-center gap-6">
+          <h3 className="font-bold text-xl text-gray-800">
+            내가 다녀온 장소를 기록하세요.
+          </h3>
           <Button variant="kakao">카카오 로그인</Button>
         </div>
       </div>
