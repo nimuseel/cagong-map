@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RegionFilter from '@/components/filters/RegionFilter';
 import { Cafe } from '@/types';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
 
 // 예시 카페 데이터
 const SAMPLE_CAFES: Cafe[] = [
@@ -90,6 +91,35 @@ export default function Home() {
 
   const [selectedCafe, setSelectedCafe] = useState('');
 
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async event => {
+        if (event === 'SIGNED_OUT') {
+          setIsSignedIn(false);
+        }
+      },
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        setIsSignedIn(data.session !== null);
+      } catch (error) {
+        console.error('Error fetching session:', error);
+      }
+    };
+
+    fetchSession();
+  }, []);
+
   // 실제 구현에서는 API 호출 등을 통해 데이터를 가져옵니다
   const cafes = SAMPLE_CAFES.filter(cafe => cafe.name.includes(searchQuery));
 
@@ -113,6 +143,23 @@ export default function Home() {
     );
   };
 
+  const handleKakaoLogin = async () => {
+    try {
+      await supabase.auth.signInWithOAuth({
+        provider: 'kakao',
+        options: {
+          redirectTo: new URL(
+            '/auth/callback',
+            window.location.origin,
+          ).toString(),
+        },
+      });
+    } catch (error) {
+      console.error('Kakao login error:', error);
+      alert(error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex itesm-center overflow-hidden">
       <div className="flex flex-2 h-screen p-5">
@@ -121,29 +168,43 @@ export default function Home() {
             selectedRegion={selectedRegion}
             onRegionChange={region => setSelectedRegion(region)}
           />
-          <div className="grid grid-cols-3 gap-4 w-full overflow-auto">
-            {Array.from({ length: 5 }).map((_, key) => (
-              <div
-                className="h-68 relative"
-                onClick={() => setSelectedCafe(`${key}`)}
-                key={key}>
-                <Image
-                  src="https://images.unsplash.com/photo-1554118811-1e0d58224f24"
-                  alt="img"
-                  fill
-                  objectFit="cover"
-                />
-              </div>
-            ))}
-          </div>
+          {!isSignedIn ? (
+            <div className="grid grid-cols-3 gap-4 w-full overflow-auto">
+              {Array.from({ length: 5 }).map((_, key) => (
+                <div
+                  className="h-68 relative"
+                  onClick={() => setSelectedCafe(`${key}`)}
+                  key={key}>
+                  <Image
+                    src="https://images.unsplash.com/photo-1554118811-1e0d58224f24"
+                    alt="img"
+                    fill
+                    objectFit="cover"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div>내가 다녀온 장소</div>
+          )}
         </div>
       </div>
       <div className="flex flex-3 w-full">
         <div className="flex flex-col w-full justify-center items-center gap-6">
-          <h3 className="font-bold text-xl text-gray-800">
-            내가 다녀온 장소를 기록하세요.
-          </h3>
-          <Button variant="kakao">카카오 로그인</Button>
+          {!isSignedIn ? (
+            <>
+              <h3 className="font-bold text-xl text-gray-800">
+                내가 다녀온 장소를 기록하세요.
+              </h3>
+              <Button variant="kakao" onClick={handleKakaoLogin}>
+                카카오 로그인
+              </Button>
+            </>
+          ) : (
+            <div>
+              아직 등록한 장소가 없네요! 다녀온 장소를 등록하고, 편하게 보세요!
+            </div>
+          )}
         </div>
       </div>
     </div>
